@@ -4,10 +4,12 @@
 // import App from './App'
 // import router from './router'
 import HelloWorld from './components/helloworld'
+import Radio from './components/radio'
 
-HelloWorld.install = (Vue) => { Vue.component(HelloWorld.name, HelloWorld) }
-
-export default HelloWorld
+const components = [HelloWorld, Radio]
+// HelloWorld.install = (Vue) => { Vue.component(HelloWorld.name, HelloWorld) }
+const install = (Vue, opts = {}) => { components.map(component => { Vue.component(component.name, component) }) }
+export default { install, HelloWorld, Radio }
 // Vue.config.productionTip = false
 
 /* eslint-disable no-new */

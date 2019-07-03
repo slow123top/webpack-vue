@@ -4,7 +4,7 @@
   "description": "A Vue.js project",
   "author": "huyuyang <huyuyang@inspur.com>",
   "private": false,
-  "library": "iview",
+  "library": "vy-component",
   "libraryTarget": "umd",
   "umdNamedDefine": true,
   "main": "dist/index.js",
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vy-ui": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

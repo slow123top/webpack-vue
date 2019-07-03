@@ -23,7 +23,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/',
-        filename: 'helloworld.min.js'
+        filename: 'vy-component.min.js'
     },
     plugins: [
         new UglifyJsPlugin({
