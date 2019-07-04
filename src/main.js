@@ -1,21 +1,11 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-// import Vue from 'vue'
-// import App from './App'
-// import router from './router'
-import HelloWorld from './components/helloworld'
-import Radio from './components/radio'
+import Vue from 'vue'
+import App from './App'
+import router from './router'
+import VyUi from 'vy-ui'
+Vue.config.productionTip = false
 
-const components = [HelloWorld, Radio]
-// HelloWorld.install = (Vue) => { Vue.component(HelloWorld.name, HelloWorld) }
-const install = (Vue, opts = {}) => { components.map(component => { Vue.component(component.name, component) }) }
-export default { install, HelloWorld, Radio }
-// Vue.config.productionTip = false
-
+Vue.use(VyUi)
 /* eslint-disable no-new */
-// new Vue({
-//   el: '#app',
-//   router,
-//   components: { App },
-//   template: '<App/>'
-// })
+new Vue({ el: '#app', router, components: { App }, template: '<App/>' })

@@ -1,11 +1,14 @@
 const path = require('path');
+const webpack = require('webpack');
 const vueLoaderConfig = require('./build/vue-loader.conf');
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const utils = require('./build/utils')
 function resolve(dir) {
     return path.join(__dirname, '.', dir)
 }
+const NODE_ENV = process.env.NODE_ENV
 module.exports = {
     // module: {
     //     rules: utils.styleLoaders({
@@ -14,16 +17,28 @@ module.exports = {
     //       usePostCSS: true
     //     })
     //   },
-    devtool: '#source-map',
     // 程序入口
     entry: {
-        app: './src/main.js'
+        app: NODE_ENV == 'development' ? './src/main.js' : './src/index.js',
     },
     // 出口 chunk
     output: {
         path: path.resolve(__dirname, './dist'),
-        publicPath: '/',
-        filename: 'vy-component.min.js'
+        publicPath: '/dist/',
+        filename: 'vy-ui.min.js',
+        library: 'vy-ui', // 指定的就是你使用require时的模块名
+        libraryTarget: 'umd', // libraryTarget会生成不同umd的代码,可以只是commonjs标准的，也可以是指amd标准的，也可以只是通过script标签引入的
+        umdNamedDefine: true // 会对 UMD 的构建过程中的 AMD 模块进行命名。否则就使用匿名的 define
+    },
+    devServer: {
+        historyApiFallback: {
+            rewrites: [
+                { from: /.*/, to: path.posix.join('/', 'index.html') },
+            ],
+        },
+        hot: true,
+        noInfo: true,
+        overlay: true
     },
     plugins: [
         new UglifyJsPlugin({
@@ -40,14 +55,16 @@ module.exports = {
             allChunks: true,
         }),
     ],
+    performance: {
+        hints: false
+    },
+    devtool: '#eval-source-map',
     resolve: {
-        extensions: ['.js', '.vue', '.json'],
+        extensions: ['*', '.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
-            '@': resolve('src'),
         }
     },
-    // 解析规则
     module: {
         rules: [
             {
@@ -65,7 +82,7 @@ module.exports = {
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    name: '/img/[name].[hash:7].[ext]'
+                    name: utils.assetsPath('img/[name].[hash:7].[ext]')
                 }
             },
             {
@@ -73,7 +90,7 @@ module.exports = {
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    name: '/media/[name].[hash:7].[ext]'
+                    name: utils.assetsPath('media/[name].[hash:7].[ext]')
                 }
             },
             {
@@ -81,9 +98,30 @@ module.exports = {
                 loader: 'url-loader',
                 options: {
                     limit: 10000,
-                    name: '/fonts/[name].[hash:7].[ext]'
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
                 }
             }
         ]
-    }
+    },
+}
+
+if (process.env.NODE_ENV === 'production') {
+    module.exports.devtool = '#source-map'
+    // http://vue-loader.vuejs.org/en/workflow/production.html
+    module.exports.plugins = (module.exports.plugins || []).concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            compress: {
+                warnings: false
+            }
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true
+        })
+    ])
 }
